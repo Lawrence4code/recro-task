@@ -79,3 +79,96 @@ removeServerButton.addEventListener('click', removeServerEvent);
 setInterval(() => {
   removeServerEvent();
 }, 5000);
+
+// ****************************************** Tasks Functionality ****************************************** //
+
+let tasks = [];
+
+const addTaskButton = document.getElementsByClassName('addTask')[0];
+const tasksRoot = document.getElementById('tasks');
+
+var waitingTasksList = [];
+
+// add event listen to add task button
+addTaskButton.addEventListener('click', () => {
+  const newTaskObj = {
+    id: tasks.length + 1,
+    status: 'waiting',
+  };
+  // create a push a new task
+  tasks.push(newTaskObj);
+  const [currentTask, ...waitingTasks] = tasks;
+  waitingTasksList = waitingTasks;
+  startProcessingTask(currentTask, waitingTasks);
+});
+
+const createTaskNode = () => {};
+
+// function to create server element and set html
+const createTaskElement = (taskObj) => {
+  const task = document.createElement('div');
+  const taskId = document.createElement('p');
+  const deleteButton = document.createElement('button');
+  taskId.className = 'taskName';
+  task.className = 'task';
+  deleteButton.innerText = 'Delete';
+
+  tasksRoot.appendChild(task);
+  if (taskObj.id === 1) {
+    task.innerHTML = `<div class="taskBar"> <p> Task ${taskObj.id} - ${taskObj.status} </p></div>`;
+  } else {
+    task.innerHTML = `<div class="taskBar"> <p> Task ${taskObj.id} - ${taskObj.status} </p> <button data-taskId=${taskObj.id} class="taskDeleteButton"> Delete</button></div>`;
+  }
+
+  task.dataset.taskId = `${taskObj.id}`;
+};
+
+const deleteButtons = document.getElementsByClassName('taskDeleteButton');
+
+// delete task function
+const deleteTaskFunction = (e) => {
+  while (tasksRoot.firstChild) {
+    tasksRoot.removeChild(tasksRoot.firstChild);
+  }
+  const taskIdToBeDelete = e.target.dataset.taskid;
+  waitingTasksList = waitingTasksList.filter((task) => {
+    return task.id !== Number(taskIdToBeDelete);
+  });
+  createWaitingTaskElements(waitingTasksList);
+};
+
+const createWaitingTaskElements = (waitingTasks) => {
+  if (waitingTasks) {
+    for (let task of waitingTasks) {
+      createTaskElement(task);
+    }
+  }
+};
+
+// start processing task in ascending order
+const startProcessingTask = (currentTask, waitingTasks) => {
+  while (tasksRoot.firstChild) {
+    tasksRoot.removeChild(tasksRoot.firstChild);
+  }
+  // the current task state to processing
+  currentTask.status = 'Processing';
+  if (currentTask) {
+    createTaskElement(currentTask);
+    createWaitingTaskElements(waitingTasks);
+    setTimeout(() => {
+      tasks = [...waitingTasks];
+      if (tasks.length >= 1) {
+        const [currentTask, ...waitingTasks] = tasks;
+        startProcessingTask(currentTask, waitingTasks);
+      } else {
+        while (tasksRoot.firstChild) {
+          tasksRoot.removeChild(tasksRoot.firstChild);
+        }
+      }
+    }, 20000);
+  }
+
+  for (let button of deleteButtons) {
+    button.addEventListener('click', deleteTaskFunction);
+  }
+};
