@@ -71,6 +71,10 @@ body {
   height: 80%;
 }
 
+#tasks p {
+  text-align: center;
+}
+
 .addServer,
 .addTask {
   background-color: #4731be;

@@ -1,4 +1,5 @@
 // ****************************************** Servers Functionality ****************************************** //
+
 // system start with one initial server
 const servers = [{ name: 'Server One' }];
 // list for server numbers
@@ -116,8 +117,8 @@ const createTaskElement = (taskObj) => {
   deleteButton.innerText = 'Delete';
 
   tasksRoot.appendChild(task);
-  // first task start processing immediately therefore should not be able to delete
-  if (taskObj.id === 1) {
+  // first task start processing immediately and tasks which are currently worked on, therefore should not be able to delete
+  if (taskObj.id === 1 || taskObj.status === 'processing') {
     task.innerHTML = `<div class="taskBar"> <p> Task ${taskObj.id} - ${taskObj.status} </p></div>`;
   } else {
     task.innerHTML = `<div class="taskBar"> <p> Task ${taskObj.id} - ${taskObj.status} </p> <button data-taskId=${taskObj.id} class="taskDeleteButton"> Delete</button></div>`;
@@ -155,7 +156,7 @@ const startProcessingTask = (currentTask, waitingTasks) => {
     tasksRoot.removeChild(tasksRoot.firstChild);
   }
   // the current task state to processing
-  currentTask.status = 'Processing';
+  currentTask.status = 'processing';
   if (currentTask) {
     createTaskElement(currentTask);
     createWaitingTaskElements(waitingTasks);
