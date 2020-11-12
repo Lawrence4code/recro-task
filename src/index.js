@@ -169,7 +169,7 @@ const startProcessingTask = (currentTask, waitingTasks) => {
           tasksRoot.removeChild(tasksRoot.firstChild);
         }
       }
-    }, 4000);
+    }, 20000);
   }
 
   for (let button of deleteButtons) {
