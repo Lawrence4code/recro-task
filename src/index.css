@@ -38,6 +38,12 @@ body {
   align-items: center;
 }
 
+.serversIcon,
+.tasksIcon {
+  font-size: 1.75rem;
+  color: rgb(207, 112, 112);
+}
+
 .serversTitle > h2 {
   margin-left: 0.5rem;
   font-size: 1.75rem;

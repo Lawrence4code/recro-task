@@ -83,6 +83,7 @@ setInterval(() => {
 // ****************************************** Tasks Functionality ****************************************** //
 
 let tasks = [];
+let [currentTask, ...waitingTasks] = tasks;
 
 const addTaskButton = document.getElementsByClassName('addTask')[0];
 const tasksRoot = document.getElementById('tasks');
@@ -97,8 +98,9 @@ addTaskButton.addEventListener('click', () => {
   };
   // create a push a new task
   tasks.push(newTaskObj);
-  const [currentTask, ...waitingTasks] = tasks;
+  let [currentTask, ...waitingTasks] = tasks;
   waitingTasksList = waitingTasks;
+
   startProcessingTask(currentTask, waitingTasks);
 });
 
@@ -114,6 +116,7 @@ const createTaskElement = (taskObj) => {
   deleteButton.innerText = 'Delete';
 
   tasksRoot.appendChild(task);
+  // first task start processing immediately therefore should not be able to delete
   if (taskObj.id === 1) {
     task.innerHTML = `<div class="taskBar"> <p> Task ${taskObj.id} - ${taskObj.status} </p></div>`;
   } else {
@@ -131,10 +134,11 @@ const deleteTaskFunction = (e) => {
     tasksRoot.removeChild(tasksRoot.firstChild);
   }
   const taskIdToBeDelete = e.target.dataset.taskid;
-  waitingTasksList = waitingTasksList.filter((task) => {
+  let [currentTask, ...waitingTasks] = tasks.filter((task) => {
     return task.id !== Number(taskIdToBeDelete);
   });
-  createWaitingTaskElements(waitingTasksList);
+  // createWaitingTaskElements(tasks);
+  startProcessingTask(currentTask, waitingTasks);
 };
 
 const createWaitingTaskElements = (waitingTasks) => {
@@ -158,14 +162,14 @@ const startProcessingTask = (currentTask, waitingTasks) => {
     setTimeout(() => {
       tasks = [...waitingTasks];
       if (tasks.length >= 1) {
-        const [currentTask, ...waitingTasks] = tasks;
+        let [currentTask, ...waitingTasks] = tasks;
         startProcessingTask(currentTask, waitingTasks);
       } else {
         while (tasksRoot.firstChild) {
           tasksRoot.removeChild(tasksRoot.firstChild);
         }
       }
-    }, 20000);
+    }, 4000);
   }
 
   for (let button of deleteButtons) {
